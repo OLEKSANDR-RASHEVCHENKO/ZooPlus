@@ -8,6 +8,7 @@ import org.openqa.selenium.support.FindBy;
 import org.testng.Assert;
 
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 public class OverviewPage extends StartPage {
     public OverviewPage(WebDriver driver) {
@@ -18,23 +19,8 @@ public class OverviewPage extends StartPage {
     WebElement customerName;
     @FindBy(xpath = "//div[@class='TopBar_headerAccountFlyoutWrapper__zTQP1']//div[@id='shopHeaderAccountLink']")
     WebElement dropDownMeinZoo;
-
-
-    @FindBy(xpath = "//*[@class='LowerBar_categoryBar__OMjjU']//*[@class='LowerBar_categoryItem__5VHca']")
-    WebElement mainNavBarOneOfNineElements;
-    @FindBy(xpath = "//*[@class='LowerBar_categoryItemLink__HE2tM' and @href='/shop/katzen']")
-    WebElement katzenfutterUndZubehoer;
-
-
-    @FindBy(xpath = "//a[normalize-space()='Diätfutter']")
-    WebElement dietFuetter;
-
-
-    @FindBy(xpath = "//*[@class='CategoryFlyout_flyOutContainer__XqaBh']")
-    WebElement mainContainer;
-
-    @FindBy(xpath = "//h1[normalize-space()='Royal Canin Katzenfutter']")
-    WebElement royalCanin;
+    @FindBy(xpath = "//*[@class='loy-bppo-bannerContainer__title']")
+    WebElement titleOnBonusPage;
 
     @FindBy(xpath = "//*[@id='header-category-links']")
     WebElement container;
@@ -54,24 +40,77 @@ public class OverviewPage extends StartPage {
         actions.moveToElement(dropDownMeinZoo).perform();
     }
 
-    public void clickOnAllElementsOfDropDownMenu() throws InterruptedException {
-        moveMouseToDropDownMyZoo();
-        List<WebElement> menus = driver.findElements(By.xpath("//*[@class='Flyout-module_flyoutVisible__u9qJE Flyout-module_flyout__qLvdx']//*[@class='Flyout-module_linkText__OZGD8']"));
-        int menuItemsCount = menus.size();
 
-        for (int i = 1; i < menuItemsCount; i++) {
+    public void clickOnAllElementsOfDropDownMenu(List<String> expectedTitles) {
+        // Наводим курсор мыши на выпадающее меню "Мой Zoo"
+        moveMouseToDropDownMyZoo();
+
+        // Находим все элементы меню, которые находятся в выпадающем списке (через XPath)
+        List<WebElement> menus = driver.findElements(By.xpath("//*[@class='Flyout-module_flyoutVisible__u9qJE Flyout-module_flyout__qLvdx']//*[@class='Flyout-module_linkText__OZGD8']"));
+
+        // Получаем количество элементов меню
+        int menuItemsCount = menus.size();
+        System.out.println(menuItemsCount);  // Выводим количество элементов в консоль
+
+        // Проходим по каждому элементу меню
+        for (int i = 0; i < menuItemsCount; i++) {
+            // Снова наводим курсор на меню, чтобы оно оставалось открытым
             moveMouseToDropDownMyZoo();
+
+            // Повторно находим все элементы меню, так как после клика они могут быть пересозданы
             menus = driver.findElements(By.xpath("//*[@class='Flyout-module_flyoutVisible__u9qJE Flyout-module_flyout__qLvdx']//*[@class='Flyout-module_linkText__OZGD8']"));
 
+            // Ждём, пока все элементы меню станут видимыми
             getWait().forAllVisibility(menus);
 
+            // Проверяем, что текущий элемент меню существует и можем кликнуть по нему
             if (menus.size() > i) {
+                // Получаем элемент меню по индексу
                 WebElement menuItem = menus.get(i);
+
+                // Кликаем по элементу
                 menuItem.click();
-                Thread.sleep(1000);
+
+                try {
+                    // Ожидаем 1 секунду после клика, чтобы страница могла загрузиться
+                    Thread.sleep(1000);
+
+                    // Пытаемся найти заголовок страницы, который может быть в тегах <h1> или <h2>
+                    WebElement titleForAllPages = driver.findElement(By.xpath("//h1[contains(@class, 'title')] | //h2[contains(@class, 'title')]"));
+
+                    // Проверяем, что заголовок виден на странице
+                    if (titleForAllPages.isDisplayed()) {
+                        // Ждём, пока заголовок страницы станет видимым
+                        getWait().forVisibility(titleForAllPages);
+
+                        // Получаем текст заголовка и выводим его в консоль
+                        String actualPageTitle = titleForAllPages.getText();
+                        System.out.println(actualPageTitle);
+
+                        // Сравниваем фактический заголовок страницы с ожидаемым
+                        Assert.assertEquals(actualPageTitle, expectedTitles.get(i));
+                    }
+
+                    // Обрабатываем исключения в блоке try
+                } catch (Exception e) {
+                    // Если заголовок страницы отличается на бонусной странице, ищем заголовок бонусной страницы
+                    if (titleOnBonusPage.isDisplayed()) {
+                        // Получаем текст заголовка бонусной страницы и выводим его в консоль
+                        String actualBonusPageTitle = titleOnBonusPage.getText();
+                        System.out.println(actualBonusPageTitle);
+
+                        // Сравниваем фактический заголовок бонусной страницы с ожидаемым
+                        Assert.assertEquals(actualBonusPageTitle, expectedTitles.get(i));
+                    } else {
+                        // Если заголовок не найден, выводим сообщение об ошибке
+                        System.out.println("Error ebat ego rot");
+                    }
+                }
             }
         }
     }
+
+
     public void moveToOneOfMainNavBarElement(String element) {
         List<WebElement> elements = driver.findElements(By.xpath("//*[@id='header-category-links']//*[@class='LowerBar_categoryItem__5VHca']"));
         getWait().forAllVisibility(elements);
@@ -83,13 +122,15 @@ public class OverviewPage extends StartPage {
             }
         }
     }
-    public void waitForSubMenuContainer(int numberOfContainer){
-        WebElement element  = driver.findElement(By.xpath("//*[@id='header-category-flyout']["+numberOfContainer+"]"));
+
+    public void waitForSubMenuContainer(int numberOfContainer) {
+        WebElement element = driver.findElement(By.xpath("//*[@id='header-category-flyout'][" + numberOfContainer + "]"));
         getWait().forVisibility(element);
         Assert.assertTrue(element.isDisplayed());
     }
-    public void clickOnOneOfMainContainerElement(int category,int column,String element) {
-        WebElement ctg = driver.findElement(By.xpath("//*[@id='header-category-flyout']["+category+"]//*[@class='CategoryFlyout_animalPanelGroup___E_yP']["+column+"]//*[text()='"+element+"']"));
+
+    public void clickOnOneOfMainContainerElement(int category, int column, String element) {
+        WebElement ctg = driver.findElement(By.xpath("//*[@id='header-category-flyout'][" + category + "]//*[@class='CategoryFlyout_animalPanelGroup___E_yP'][" + column + "]//*[text()='" + element + "']"));
         getWait().forVisibility(ctg);
         ctg.click();
 

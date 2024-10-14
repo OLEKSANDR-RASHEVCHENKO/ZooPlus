@@ -40,9 +40,11 @@ public class StartPage extends BasePage {
 
     }
 
-    public void moveMouseToDropDownMyZoo() {
+    public void moveMouseToDropDownMyZoo() throws InterruptedException {
         Actions actions = new Actions(driver);
         actions.moveToElement(dropDownMeinZoo).perform();
+        Thread.sleep(2000);
+
     }
 
     public void clickOnOneOfDropDownElement(String element) {

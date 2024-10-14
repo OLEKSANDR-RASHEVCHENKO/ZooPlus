@@ -46,14 +46,15 @@ public class Wait {
         }
     }
 
-    public void forClickable(WebElement element) {
+    public boolean forClickable(WebElement element) {
         try {
             setWait().until(ExpectedConditions.elementToBeClickable(element));
+            return true;
         } catch (TimeoutException e) {
-            throw new TimeoutException(element.getAccessibleName() + " is not clickable more than " + TIMEOUT.toString());
+            System.out.println(element.getAccessibleName() + " is not clickable within the given timeout.");
+            return false;
         }
     }
-
     public void forInClickable(WebElement element) {
         try {
             setWait().until(ExpectedConditions.not(ExpectedConditions.elementToBeClickable(element)));

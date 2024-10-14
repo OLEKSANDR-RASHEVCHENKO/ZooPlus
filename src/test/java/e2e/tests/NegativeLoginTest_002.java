@@ -13,7 +13,7 @@ public class NegativeLoginTest_002 extends TestBase{
 
     OverviewPage overviewPage;
 
-    public void negativeMethod(String email,String password,boolean emptyEmail,boolean emptyPassword,boolean shortPassword){
+    public void negativeMethod(String email,String password,boolean emptyEmail,boolean emptyPassword,boolean shortPassword) throws InterruptedException {
         String myZoo = "Mein zooplus";
         startPage =new StartPage(app.driver);
         startPage.clickOnCookies();
@@ -37,16 +37,16 @@ public class NegativeLoginTest_002 extends TestBase{
 
     }
     @Test
-    public void emptyEmail(){
+    public void emptyEmail() throws InterruptedException {
         negativeMethod("","Virthunter@12",true,false,false);
     }
 
     @Test
-    public void emptyPassword(){
+    public void emptyPassword() throws InterruptedException {
         negativeMethod("Virthunter@gmail.com","",false,true,false);
     }
     @Test
-    public void shortPassword(){
+    public void shortPassword() throws InterruptedException {
         negativeMethod("Virthunter@gmail.com","Vi",false,false,true);
     }
 }
