@@ -45,7 +45,6 @@ public class UserCanChooseProductsFromAnyCategory_003 extends TestBase {
         productsPage.waitForLoadingProductsPage();
         productsPage.checkIfAllProductsHaveCorrectName("Rocco");
 
-
     }
 
 

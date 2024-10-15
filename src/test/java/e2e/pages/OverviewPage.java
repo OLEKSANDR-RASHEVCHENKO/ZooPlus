@@ -42,15 +42,10 @@ public class OverviewPage extends StartPage {
 
 
     public void clickOnAllElementsOfDropDownMenu(List<String> expectedTitles) {
-        // Наводим курсор мыши на выпадающее меню "Мой Zoo"
         moveMouseToDropDownMyZoo();
-
-        // Находим все элементы меню, которые находятся в выпадающем списке (через XPath)
         List<WebElement> menus = driver.findElements(By.xpath("//*[@class='Flyout-module_flyoutVisible__u9qJE Flyout-module_flyout__qLvdx']//*[@class='Flyout-module_linkText__OZGD8']"));
-
-        // Получаем количество элементов меню
         int menuItemsCount = menus.size();
-        System.out.println(menuItemsCount);  // Выводим количество элементов в консоль
+        System.out.println(menuItemsCount);
 
         // Проходим по каждому элементу меню
         for (int i = 0; i < menuItemsCount; i++) {
