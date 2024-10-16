@@ -47,7 +47,7 @@ public class ChooseAndEddItemToShoppingCart_005 extends TestBase{
         productsPage.chooseOneProductOnProductsPage(1);
         oneProductPage = new OneProductPage(app.driver);
         oneProductPage.waitForLoadingProductPage();
-        oneProductPage.chooseQuantityOfProducts(3);
+        oneProductPage.chooseQuantityOfProducts(2);
 
 
     }

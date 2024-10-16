@@ -48,10 +48,8 @@ public class OneProductPage extends BasePage{
 
 
     public void chooseQuantityOfProducts(int quantity) {
-        // Определяем тип страницы
         PageType pageType = getPageType();
 
-        // Используем switch-case для выполнения логики в зависимости от типа страницы
         switch (pageType) {
             case PLUS_BUTTON_PAGE:
                 handlePlusButton(quantity);
@@ -66,9 +64,7 @@ public class OneProductPage extends BasePage{
         }
     }
 
-    // Метод для определения типа страницы
     private PageType getPageType() {
-        // Используем безопасные проверки для наличия элементов
         if (isElementPresent(By.xpath("//*[@data-zta='quantityStepperIncrementButton']"))) {
             return PageType.PLUS_BUTTON_PAGE;
         } else if (isElementPresent(By.xpath("//*[@class='z-qty-picker__select']"))) {
@@ -78,10 +74,8 @@ public class OneProductPage extends BasePage{
         }
     }
 
-    // Метод для безопасного поиска элементов
     private boolean isElementPresent(By locator) {
         try {
-            // Проверяем, есть ли элемент на странице
             return driver.findElements(locator).size() > 0;
         } catch (NoSuchElementException e) {
             return false;
@@ -91,7 +85,6 @@ public class OneProductPage extends BasePage{
     // Метод для работы с кнопкой плюс
     private void handlePlusButton(int quantity) {
         try {
-            // Ищем элемент кнопки плюс динамически и кликаем по нему
             WebElement plusButton = driver.findElement(By.xpath("//*[@data-zta='quantityStepperIncrementButton']"));
             for (int i = 0; i < quantity; i++) {
                 plusButton.click();
@@ -101,9 +94,7 @@ public class OneProductPage extends BasePage{
         }
     }
 
-    // Метод для работы с выпадающим списком
     private void handleDropDownButton(int quantity) {
-            // Ищем элемент выпадающего списка динамически
             WebElement dropDownButton = driver.findElement(By.xpath("//*[@class='z-qty-picker__select']"));
             getWait().forVisibility(dropDownButton);
             Select select = new Select(dropDownButton);
