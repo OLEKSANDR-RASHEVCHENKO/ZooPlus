@@ -1,9 +1,7 @@
 package e2e.pages;
 
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import e2e.enums.PageType;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
@@ -18,9 +16,9 @@ public class OneProductPage extends BasePage{
     WebElement title;
     @FindBy(xpath = "//*[@data-zta='quantityStepperIncrementButton']")
     WebElement plusButton;
-    @FindBy(xpath = "//*[@class='z-qty-picker__select']")
+    @FindBy(xpath = "//select[@class='z-qty-picker__select']")
     WebElement dropDownButton;
-    @FindBy(xpath = "//*[@class='SelectedArticleBox_topSection__ftfsP']//div[2]//span[2]")
+    @FindBy(xpath = "//*[@class='z-price ActiveVariantPrice_container__vdGaz Price_price__9QP3p']//div[2]//span[2]")
     WebElement price;
     @FindBy(xpath = "//span[normalize-space()='Zum Warenkorb hinzufügen']")
     WebElement addToCartButton;
@@ -49,8 +47,78 @@ public class OneProductPage extends BasePage{
     }
 
 
-    public void chooseQuantityOfProduct(int quantity) {
+    public void chooseQuantityOfProducts(int quantity) {
+        // Определяем тип страницы
+        PageType pageType = getPageType();
+
+        // Используем switch-case для выполнения логики в зависимости от типа страницы
+        switch (pageType) {
+            case PLUS_BUTTON_PAGE:
+                handlePlusButton(quantity);
+                break;
+
+            case DROPDOWN_BUTTON_PAGE:
+                handleDropDownButton(quantity);
+                break;
+
+            case NO_ELEMENT_FOUND:
+                throw new NoSuchElementException("Neither plus button nor drop-down button is available on the page.");
+        }
+    }
+
+    // Метод для определения типа страницы
+    private PageType getPageType() {
+        // Используем безопасные проверки для наличия элементов
+        if (isElementPresent(By.xpath("//*[@data-zta='quantityStepperIncrementButton']"))) {
+            return PageType.PLUS_BUTTON_PAGE;
+        } else if (isElementPresent(By.xpath("//*[@class='z-qty-picker__select']"))) {
+            return PageType.DROPDOWN_BUTTON_PAGE;
+        } else {
+            return PageType.NO_ELEMENT_FOUND;
+        }
+    }
+
+    // Метод для безопасного поиска элементов
+    private boolean isElementPresent(By locator) {
+        try {
+            // Проверяем, есть ли элемент на странице
+            return driver.findElements(locator).size() > 0;
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
+    // Метод для работы с кнопкой плюс
+    private void handlePlusButton(int quantity) {
+        try {
+            // Ищем элемент кнопки плюс динамически и кликаем по нему
+            WebElement plusButton = driver.findElement(By.xpath("//*[@data-zta='quantityStepperIncrementButton']"));
+            for (int i = 0; i < quantity; i++) {
+                plusButton.click();
+            }
+        } catch (NoSuchElementException e) {
+            System.out.println("Error with plus button.");
+        }
+    }
+
+    // Метод для работы с выпадающим списком
+    private void handleDropDownButton(int quantity) {
+            // Ищем элемент выпадающего списка динамически
+            WebElement dropDownButton = driver.findElement(By.xpath("//*[@class='z-qty-picker__select']"));
+            getWait().forVisibility(dropDownButton);
+            Select select = new Select(dropDownButton);
+            select.selectByIndex(quantity);
+    }
+
+
+
+
+
+
+
+   /* public void chooseQuantityOfProduct(int quantity) {
         boolean clickedPlusButton = false;
+
         for (int i = 0; i < quantity; i++) {
             if (plusButton.isDisplayed()) {
                 plusButton.click();
@@ -72,7 +140,17 @@ public class OneProductPage extends BasePage{
                 select.selectByValue(String.valueOf(quantity));
             }
         }
-    }
+    }*/
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -23,8 +23,8 @@ public class ChooseAndEddItemToShoppingCart_005 extends TestBase{
         String email = "Virthunter@gmail.com";
         String password = "Virthunter@12";
         String myZoo = "Mein zooplus";
-        String katzen = "Kleintier";
-        String subSubMenu = "Igelfutter";
+        String katzen = "Katzenfutter & Zubehör";
+        String subSubMenu = "Felix";
 
         startPage = new StartPage(app.driver);
         startPage.clickOnCookies();
@@ -40,14 +40,14 @@ public class ChooseAndEddItemToShoppingCart_005 extends TestBase{
         overviewPage = new OverviewPage(app.driver);
         overviewPage.waitForLoadingOverviewPage();
         overviewPage.moveToOneOfMainNavBarElement(katzen);
-        overviewPage.waitForSubMenuContainer(SubMenu.KLEINTIER.getValue());
-        overviewPage.clickOnOneOfMainContainerElement(SubMenu.KLEINTIER.getValue(), SubSubMenu.SECTIONONE.getValue(), subSubMenu);// короче тут какая шляпа посмотри в метод я там в локатор закидываю разные данные почему я так сделал да потому что нету одного локатора который бы ползрдил ко всем елементам ко всей той хуевой тучи товаров когда ты наводишься на какуб то категорию(я бы мог записать все вручнуб в скобках но решил сделать енамы что бы один раз в енамаз прописать все возможное и потом чисто в тесте вызвать то что тебе нудно пкороче просто зайди в енамаы и посмотри все там более менее понятно все )
+        overviewPage.waitForSubMenuContainer(SubMenu.KATZE.getValue());
+        overviewPage.clickOnOneOfMainContainerElement(SubMenu.KATZE.getValue(), SubSubMenu.SECTIONONE.getValue(), subSubMenu);// короче тут какая шляпа посмотри в метод я там в локатор закидываю разные данные почему я так сделал да потому что нету одного локатора который бы ползрдил ко всем елементам ко всей той хуевой тучи товаров когда ты наводишься на какуб то категорию(я бы мог записать все вручнуб в скобках но решил сделать енамы что бы один раз в енамаз прописать все возможное и потом чисто в тесте вызвать то что тебе нудно пкороче просто зайди в енамаы и посмотри все там более менее понятно все )
         productsPage = new ProductsPage(app.driver);
         productsPage.waitForLoadingProductsPage();
         productsPage.chooseOneProductOnProductsPage(1);
         oneProductPage = new OneProductPage(app.driver);
         oneProductPage.waitForLoadingProductPage();
-        oneProductPage.chooseQuantityOfProduct(3);
+        oneProductPage.chooseQuantityOfProducts(3);
 
 
     }
