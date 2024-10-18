@@ -3,6 +3,7 @@ package e2e.tests;
 import e2e.enums.SubMenu;
 import e2e.enums.SubSubMenu;
 import e2e.pages.*;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class ChooseAndEddItemToShoppingCart_005 extends TestBase{
@@ -15,6 +16,8 @@ public class ChooseAndEddItemToShoppingCart_005 extends TestBase{
 
     ProductsPage productsPage;
     OneProductPage oneProductPage;
+
+    ShoppingCartPage shoppingCartPage;
 
     @Test
     public void userCanChooseAndEddItemToShoppingCart() throws InterruptedException {
@@ -48,6 +51,19 @@ public class ChooseAndEddItemToShoppingCart_005 extends TestBase{
         oneProductPage = new OneProductPage(app.driver);
         oneProductPage.waitForLoadingProductPage();
         oneProductPage.chooseQuantityOfProducts(2);
+        String expectedName=oneProductPage.getProductName();
+        double expectedPrice =oneProductPage.getPrice()*2;
+        oneProductPage.addToCart();
+        oneProductPage.goToShoppingCart();
+        shoppingCartPage = new ShoppingCartPage(app.driver);
+        shoppingCartPage.waitForLoadingShoppingCart();
+        String actualName=shoppingCartPage.getItemName();
+        double actualPrice=shoppingCartPage.getItemPrice();
+        Assert.assertEquals(expectedName,actualName);
+        Assert.assertEquals(expectedPrice, actualPrice);
+        shoppingCartPage.removeProductsFromShoppingCart(0);
+        shoppingCartPage.itemIsNotInTheShoppingCart();
+
 
 
     }

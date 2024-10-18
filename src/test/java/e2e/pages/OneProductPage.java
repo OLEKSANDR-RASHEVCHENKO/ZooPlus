@@ -24,6 +24,8 @@ public class OneProductPage extends BasePage{
     WebElement addToCartButton;
     @FindBy(xpath = "//span[@data-testid='buttonText']")
     WebElement goToShoppingCartButton;
+    @FindBy(xpath = "//*[@aria-labelledby='addToCartPopoverTitle']")
+    WebElement successAddedItem;
 
     public void waitForLoadingProductPage(){
         getWait().forVisibility(title);
@@ -46,6 +48,14 @@ public class OneProductPage extends BasePage{
         return  Double.parseDouble(cleanedPrice);
     }
 
+    public void addToCart(){
+        addToCartButton.click();
+        getWait().forVisibility(successAddedItem);
+    }
+    public void goToShoppingCart(){
+        getWait().forInvisibility(successAddedItem);
+        goToShoppingCartButton.click();
+    }
 
     public void chooseQuantityOfProducts(int quantity) {
         PageType pageType = getPageType();
@@ -82,7 +92,6 @@ public class OneProductPage extends BasePage{
         }
     }
 
-    // Метод для работы с кнопкой плюс
     private void handlePlusButton(int quantity) {
         try {
             WebElement plusButton = driver.findElement(By.xpath("//*[@data-zta='quantityStepperIncrementButton']"));
