@@ -45,7 +45,6 @@ public class OverviewPage extends StartPage {
         moveMouseToDropDownMyZoo();
         List<WebElement> menus = driver.findElements(By.xpath("//*[@class='Flyout-module_flyoutVisible__u9qJE Flyout-module_flyout__qLvdx']//*[@class='Flyout-module_linkText__OZGD8']"));
         int menuItemsCount = menus.size();
-        System.out.println(menuItemsCount);
 
         // Проходим по каждому элементу меню
         for (int i = 0; i < menuItemsCount; i++) {
